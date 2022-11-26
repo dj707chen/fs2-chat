@@ -5,13 +5,13 @@ import cats.implicits._
 import org.jline.reader.EndOfFileException
 import org.jline.reader.LineReaderBuilder
 import org.jline.reader.UserInterruptException
-import org.jline.utils.{AttributedStringBuilder, AttributedStyle}
+import org.jline.utils.{ AttributedStringBuilder, AttributedStyle }
 
 trait Console[F[_]]:
-  def println(msg: String): F[Unit]
-  def info(msg: String): F[Unit]
-  def alert(msg: String): F[Unit]
-  def errorln(msg: String): F[Unit]
+  def println(msg:     String): F[Unit]
+  def info(msg:        String): F[Unit]
+  def alert(msg:       String): F[Unit]
+  def errorln(msg:     String): F[Unit]
   def readLine(prompt: String): F[Option[String]]
 
 object Console:
@@ -53,7 +53,7 @@ object Console:
             .handleErrorWith {
               case _: EndOfFileException     => (None: Option[String]).pure[F]
               case _: UserInterruptException => (None: Option[String]).pure[F]
-              case t                         => Sync[F].raiseError(t)
+              case t => Sync[F].raiseError(t)
             }
       }
     }

@@ -79,7 +79,9 @@ object Server:
                   .traverse_(username => clients.broadcast(Protocol.ServerCommand.Alert(s"$username disconnected.")))
               } *> Console[F].info(s"Unregistered client ${state.id}")
             Stream
-              .bracket(ConnectedClient[F](clientSocket).flatTap(clients.register))(
+              .bracket(
+                ConnectedClient[F](clientSocket).flatTap(clients.register)
+              )(
                 unregisterClient
               )
               .flatMap(client => handleClient[F](clients, client, clientSocket))

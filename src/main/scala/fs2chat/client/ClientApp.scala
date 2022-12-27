@@ -7,7 +7,17 @@ import com.comcast.ip4s._
 import com.monovore.decline._
 
 object ClientApp extends IOApp {
-  private val argsParser: Command[(Username, SocketAddress[IpAddress])] =
+  private val argsParser: Command[(Username, SocketAddress[IpAddress])] = {
+    /*
+    To verify error messages, run
+    sbt "runMain fs2chat.client.ClientApp  --username=DJ --address=localhost --port=9999999"
+
+    Invalid IP address provided to "Address of chat server" parameter:
+     localhost
+
+    Invalid port number provided to "Port of chat server" parameter:
+     9999999
+     */
     Command("fs2chat-client", "FS2 Chat Client") {
       (
         Opts
@@ -16,16 +26,29 @@ object ClientApp extends IOApp {
         Opts
           .option[String]("address", "Address of chat server")
           .withDefault("127.0.0.1")
-          .mapValidated(p => IpAddress(p).toValidNel("Invalid IP address")),
+          .mapValidated(p =>
+            IpAddress(p).toValidNel(
+              s"""${scala.Console.RED}
+                 |Invalid IP address provided to "Address of chat server" parameter:
+                 |${scala.Console.RESET} $p""".stripMargin
+            )
+          ),
         Opts
           .option[Int]("port", "Port of chat server")
           .withDefault(5555)
-          .mapValidated(p => Port(p).toValidNel("Invalid port number"))
+          .mapValidated(p =>
+            Port(p).toValidNel(
+              s"""${scala.Console.RED}
+                 |Invalid port number provided to "Port of chat server" parameter:
+                 |${scala.Console.RESET} $p""".stripMargin
+            )
+          )
       ).mapN {
         case (desiredUsername, ip, port) =>
           desiredUsername -> SocketAddress(ip, port)
       }
     }
+  }
 
   def run(args: List[String]): IO[ExitCode] =
     argsParser.parse(args) match {

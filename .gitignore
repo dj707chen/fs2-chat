@@ -1,21 +1,16 @@
-.idea
-.idea_modules
-target
-project/boot
-*.swp
-*.swo
-project.vim
+target/
+.bsp/
+.idea/
+# vim
+*.sw?
+
+# Ignore [ce]tags files
 tags
-.lib
-*~
-*#
-z_local.sbt
-.DS_Store
-.ensime
-/.ensime_cache
-.tags
-.metaserver
-test-output
+
+# Metals
 .metals
 .bloop
-project/metals.sbt
+metals.sbt
+.vscode 
+
+.DS_Store
